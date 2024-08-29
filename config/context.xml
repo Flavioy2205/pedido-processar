@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <!-- Configuração do DataSource para o PostgreSQL -->
+    <Resource name="jdbc/mydb" 
+        auth="Container" 
+        type="javax.sql.DataSource" 
+        driverClassName="org.postgresql.Driver" 
+        url="jdbc:postgresql://localhost:5432/pedidos_db" 
+        username="postgres" 
+        password="2205" 
+        maxTotal="20" 
+        maxIdle="10" 
+        maxWaitMillis="-1"
+    />
+
+   
+    <!-- Configuração do RabbitMQ -->
+    <Resource
+        name="jms/RabbitMQConnectionFactory"
+        auth="Container"
+        type="org.springframework.amqp.rabbit.connection.ConnectionFactory"
+        factory="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
+        username="admin"
+        password="admin"
+        host="localhost"
+        port="5672"
+        virtualHost="/"
+        publisherConfirms="true"
+        publisherReturns="true"
+    />
+
+</Context>

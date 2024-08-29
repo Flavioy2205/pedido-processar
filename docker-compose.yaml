@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    container_name: pedido_processor_db
+    environment:
+      POSTGRES_DB: pedidos_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 2205
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: pedido_processor_rabbitmq
+    ports:
+      - "5672:5672"  # Porta para o protocolo AMQP
+      - "15672:15672" # Porta para a interface de gerenciamento do RabbitMQ
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+    - rabbitmq_data:/var/lib/rabbitmq
+
+  app:
+    image: openjdk:17-jdk-slim
+    container_name: pedido_processor_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/pedidos_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 2205
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: admin
+      SPRING_RABBITMQ_PASSWORD: admin
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
